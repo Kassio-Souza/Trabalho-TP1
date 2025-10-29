@@ -23,11 +23,8 @@ public class GestorMaster extends Pessoa {
     }  
 
     public Usuario cadastrar (long idUsuario, String login, String senha, String tipo) {
-
-        Usuario user = new Usuario(idUsuario, login, senha, tipo, this); 
-
+        Usuario user = new Usuario(idUsuario, login, senha, tipo, this);
         usuarios.add(user);
-
         return user;
     }
 
@@ -57,34 +54,19 @@ public class GestorMaster extends Pessoa {
     }
 
     public void excluir (Usuario usuario) {
-
-        boolean usuarioRemovido = false;
-
-        for (Usuario user : usuarios) {
-            
-            if (user.getIdUsuario() == usuario.getIdUsuario()) {
-                
-                usuarios.remove(user);   
-                usuarioRemovido = true;
-                break;
-            }
-        }
-
-        if (usuarioRemovido == false) {
-           
+        boolean usuarioRemovido = usuarios.removeIf(user -> user.getIdUsuario() == usuario.getIdUsuario());
+        if (usuarioRemovido) {
+            Usuario.remover(usuario, this);
+        } else {
             throw new RegraNegocioException("Usuário não encontrado.");
         }
     }
 
-    public ArrayList<Long> listar () {
-
+    public ArrayList<Long> listarUsuarios () {
         ArrayList<Long> IDs = new ArrayList<>();
-
         for (Usuario user : usuarios) {
-            
             IDs.add(user.getIdUsuario());
         }
-
         return IDs;
     }
 
@@ -110,14 +92,10 @@ public class GestorMaster extends Pessoa {
     }  
 
     public ArrayList<String> gerarRelatorio () {
-
         ArrayList<String> relatos = new ArrayList<>();
-
         for (Usuario user : usuarios) {
-            
-            relatos.add(String.format("ID: %s Login: %s Senha: %s Tipo: %s", user.getIdUsuario(), user.getLogin(), user.getSenha(), user.getTipo()));
+            relatos.add(String.format("ID: %s Login: %s Tipo: %s", user.getIdUsuario(), user.getLogin(), user.getTipo()));
         }
-
         return relatos;
     }
 
